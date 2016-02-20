@@ -15,7 +15,8 @@ def makeMove(inputs,outputs,history):
     start=length
     if length>window:
         start=window
-    prediction = choice(choices)
+    prediction = choice(choices) #"best move so far" variable
+    weight = 0 #weight of the prediction based on algortithm
     for k in range(length-start,length-1): #iterates through shrinking window
         if length==0: #if window non-existant
             return choice(choices)
@@ -48,8 +49,11 @@ def makeMove(inputs,outputs,history):
             print "r" + str(rcount)
             print "p" + str(pcount)
             print "s" + str(scount)'''
-            return beats[move]
-    return choice(choices)
+            cur_weight = history.count(ins)*len(ins)
+            if cur_weight > weight:
+                prediction = move
+                weight = cur_weight
+    return beats[prediction]
 
 #Runs rock-paper-scissors games until player exits, returns the result.
 def RPS():
