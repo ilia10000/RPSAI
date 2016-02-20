@@ -15,19 +15,19 @@ def makeMove(inputs,outputs,history):
     start=length
     if length>window:
         start=window
-    
-    for k in range(length-start,length-1):
-        if length==0:
+    prediction = choice(choices)
+    for k in range(length-start,length-1): #iterates through shrinking window
+        if length==0: #if window non-existant
             return choice(choices)
-        ins = "".join(inputs[k:])
-        if ins in history[:-1]:
+        ins = "".join(inputs[k:]) #turn inputs from k and on into string
+        if ins in history[:-1]: #if input string in history string
             rcount=0
             pcount=0
             scount=0
             prev=-1
-            for i in range(history.count(ins)):
+            for i in range(history.count(ins)): #iterate through every occurence of input string in history
                 prev1=history.find(ins,prev+1)
-                if prev1+len(ins) <= len(history)-1:
+                if prev1+len(ins) <= len(history)-1: #find next move after input string occurence
                     next1 = history[prev1 + len(ins)]  
                 if next1 =="R":
                     rcount+=1
@@ -36,11 +36,11 @@ def makeMove(inputs,outputs,history):
                 else:
                     scount+=1
                 prev = prev1
-            if max(rcount,pcount,scount)==rcount:
+            if max(rcount,pcount,scount)==rcount: #if r most common next move
                 move = "R"
-            elif max(rcount,pcount,scount)==pcount:
+            elif max(rcount,pcount,scount)==pcount: #if p most common next move
                 move="P"
-            elif max(rcount,pcount,scount)==scount:
+            elif max(rcount,pcount,scount)==scount: #if s most common next move
                 move = "S"
             '''print ins
             print "next is: " + move
@@ -80,8 +80,10 @@ def RPS():
                 history+=inputs[-2]
             inputs.append(choice1)
             outputs.append(move)
+            myfile.write(choice1)
         else:
             print "Invalid move"
+
     myfile.close()    
     return ("Player: " + str(pwins) + "  Cpu: " +str(cwins))
 
