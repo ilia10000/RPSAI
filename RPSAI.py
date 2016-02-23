@@ -54,11 +54,20 @@ def makeMove(inputs,outputs,history):
                 prediction = move
                 weight = cur_weight
     return beats[prediction]
+def gen_rand():
+    myfile = open("Random.txt","w+")
+    for i in range(10000):
+        a = choice(choices)
+        myfile.write(a)
+        #print a
+    myfile.close()
+    return
 
 #Runs rock-paper-scissors games until player exits, returns the result.
 def RPS():
-    myfile = open("F.txt","w+")
+    myfile = open("Random.txt","a+")
     history = myfile.read()
+    print history
     myfile.seek(0,2)
     cwins=0
     pwins=0
