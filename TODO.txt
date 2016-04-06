@@ -1,0 +1,24 @@
+Additional features to track:
+- Play speed (overall and between each move)
+- Every play by both AI and Player
+- Number of plays, wins, losses, ties
+- Weighting algorithm used
+- Weight attributed to each potential length
+- Initial conditions (trained vs untrained)
+
+Additional in-game functionality:
+- Force player to play fast (counter or depleting bar?)
+- Remove need to press "Enter" key
+
+Additional meta-functionality:
+- Create nice CSVs/datastores
+- Amalgamate data by name
+- Interactive GUI
+- Wrapper script for launch
+
+Research:
+- Identify optimal tracking-window length algorithm
+- Create more test data
+- Do formal null hypothesis for Problem 1
+- Formalize Problem 2
+- Continue reading papers
