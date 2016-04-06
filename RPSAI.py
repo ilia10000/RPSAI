@@ -64,8 +64,12 @@ def gen_rand():
     return
 
 #Runs rock-paper-scissors games until player exits, returns the result.
+import time
+
 def RPS():
-    myfile = open("Random.txt","a+")
+    timestr = time.strftime("%Y%m%d-%H%M%S")
+    name = raw_input("Name: ")
+    myfile = open(name+"_"+timestr,"a+")
     history = myfile.read()
     print history
     myfile.seek(0,2)
