@@ -69,14 +69,20 @@ import time
 def RPS():
     timestr = time.strftime("%Y%m%d-%H%M%S")
     name = raw_input("Name: ")
-    myfile = open(name+"_"+timestr,"a+")
-    history = myfile.read()
-    print history
-    myfile.seek(0,2)
+    to_load = raw_input("Filename: ") 
+    preload = open(to_load, "a+") #File to load data from
+    history = preload.read() #Load data
+    preload.close()
+    #print history
+    filename = name+"_"+timestr
+    myfile = open(filename,"a+") #File to write to
+    myfile.seek(0,2) #Go to end of file
+    #Initializations
     cwins=0
     pwins=0
     inputs=[]
     outputs=[]
+    counter=0
     print("Choose 'R', 'P' or 'S' to make a move, choose 'E' to exit.")
     #Main game loop
     while True:
