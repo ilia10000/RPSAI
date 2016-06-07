@@ -89,32 +89,36 @@ def RPS():
     print("Choose 'R', 'P' or 'S' to make a move, I for summary statistics, choose 'E' to exit.")
     #Main game loop
     while True:
-        choice1 =raw_input() #Read input
-        if choice1!="": #Avoids error with empty input
-            choice1=choice1.upper() #Standardize input to caps
-        if choice1 == "E": #Exit the main game loop
+        e_flag=False
+        choices =raw_input() #Read input
+        for choice1 in choices:
+            if choice1!="": #Avoids error with empty input
+                choice1=choice1.upper() #Standardize input to caps
+            if choice1 == "E": #Exit the main game loop
+                e_flag = True
+                break
+            if choice1 == "I":
+                print "Player: " + str(pwins) + "  Cpu: " +str(cwins)+" Ties: " + str(ties) + " Total played: " + str(counter)
+            elif choice1 in list("RPS"): #Valid move
+                counter += 1
+                move=makeMove(inputs,outputs,history) #Call AI for move
+                if beats[move]==choice1: #Player victory
+                    pwins+=1 #Add points to player
+                elif beats[choice1]==move: #Computer victory
+                    cwins+=1 #Add points to computer
+                elif move==choice1:
+                    ties +=1
+                print (choice1 + "  vs.  " + move) #Display round result
+                print str(pwins) + " " + str(cwins) #Score update
+                if len(inputs)>1:
+                    history+=inputs[-2]
+                inputs.append(choice1)
+                outputs.append(move)
+                myfile.write(choice1)
+            else:
+                print "Invalid move"
+        if e_flag and raw_input("Quit? Y/N "):
             break
-        if choice1 == "I":
-            print "Player: " + str(pwins) + "  Cpu: " +str(cwins)+" Ties: " + str(ties) + " Total played: " + str(counter)
-        elif choice1 in list("RPS"): #Valid move
-            counter += 1
-            move=makeMove(inputs,outputs,history) #Call AI for move
-            if beats[move]==choice1: #Player victory
-                pwins+=1 #Add points to player
-            elif beats[choice1]==move: #Computer victory
-                cwins+=1 #Add points to computer
-            elif move==choice1:
-                ties +=1
-            print (choice1 + "  vs.  " + move) #Display round result
-            print str(pwins) + " " + str(cwins) #Score update
-            if len(inputs)>1:
-                history+=inputs[-2]
-            inputs.append(choice1)
-            outputs.append(move)
-            myfile.write(choice1)
-        else:
-            print "Invalid move"
-
     myfile.close()    
     return ("Player: " + str(pwins) + "  Cpu: " +str(cwins) +" Ties: " + str(ties) + " Total played: " + str(counter))
 
