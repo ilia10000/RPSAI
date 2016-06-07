@@ -82,6 +82,7 @@ def RPS():
     #Initializations
     cwins=0
     pwins=0
+    ties=0
     inputs=[]
     outputs=[]
     counter=0
@@ -93,6 +94,8 @@ def RPS():
             choice1=choice1.upper() #Standardize input to caps
         if choice1 == "E": #Exit the main game loop
             break
+        if choice1 == "S":
+            print "Player: " + str(pwins) + "  Cpu: " +str(cwins)+" Ties: " + str(ties) + " Total played: " + str(counter)
         elif choice1 in list("RPS"): #Valid move
             counter += 1
             move=makeMove(inputs,outputs,history) #Call AI for move
@@ -100,6 +103,8 @@ def RPS():
                 pwins+=1 #Add points to player
             elif beats[choice1]==move: #Computer victory
                 cwins+=1 #Add points to computer
+            elif move==choice1:
+                ties +=1
             print (choice1 + "  vs.  " + move) #Display round result
             print str(pwins) + " " + str(cwins) #Score update
             if len(inputs)>1:
@@ -111,7 +116,7 @@ def RPS():
             print "Invalid move"
 
     myfile.close()    
-    return ("Player: " + str(pwins) + "  Cpu: " +str(cwins) + " Total played: " + str(counter))
+    return ("Player: " + str(pwins) + "  Cpu: " +str(cwins) +" Ties: " + str(ties) + " Total played: " + str(counter))
 
             
         
