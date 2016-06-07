@@ -9,7 +9,7 @@ beats = {"R":"P","P":"S","S":"R"}
 
 
 #Scans for current pattern in history to predict next player move
-def makeMove(inputs,outputs,history):
+def makeMove(inputs,outputs,history,algo):
     move = ""
     length = len(inputs)
     start=length
@@ -49,7 +49,16 @@ def makeMove(inputs,outputs,history):
             print "r" + str(rcount)
             print "p" + str(pcount)
             print "s" + str(scount)'''
-            cur_weight = history.count(ins)*len(ins)
+            if algo =="1":
+                cur_weight = history.count(ins)*len(ins) # Algo 1
+            if algo == "2":
+                cur_weight = history.count(ins)*history.count(ins)*len(ins)
+            if algo == "3":
+                cur_weight = history.count(ins)*len(ins)*len(ins)
+            if algo == "4":
+                cur_weight = history.count(ins)*len(ins)*len(ins)*len(ins)
+            if algo == "5":
+                cur_weight = history.count(ins)*len(ins)*len(ins)*len(ins)*len(ins)
             if cur_weight > weight:
                 prediction = move
                 weight = cur_weight
@@ -70,6 +79,7 @@ def RPS():
     timestr = time.strftime("%Y%m%d-%H%M%S")
     name = raw_input("Name: ")
     to_load = raw_input("Filename: ")
+    algo = raw_input("Algo: ")
     history=""
     if len(to_load)>0:
         preload = open(to_load, "a+") #File to load data from
@@ -77,6 +87,7 @@ def RPS():
         preload.close()
     #print history
     filename = name+"_"+timestr
+    metafile = filename+ "_meta"
     myfile = open(filename,"a+") #File to write to
     myfile.seek(0,2) #Go to end of file
     #Initializations
@@ -101,7 +112,7 @@ def RPS():
                 print "Player: " + str(pwins) + "  Cpu: " +str(cwins)+" Ties: " + str(ties) + " Total played: " + str(counter)
             elif choice1 in list("RPS"): #Valid move
                 counter += 1
-                move=makeMove(inputs,outputs,history) #Call AI for move
+                move=makeMove(inputs,outputs,history,algo) #Call AI for move
                 if beats[move]==choice1: #Player victory
                     pwins+=1 #Add points to player
                 elif beats[choice1]==move: #Computer victory
