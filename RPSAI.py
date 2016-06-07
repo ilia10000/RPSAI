@@ -94,6 +94,7 @@ def RPS():
         if choice1 == "E": #Exit the main game loop
             break
         elif choice1 in list("RPS"): #Valid move
+            counter += 1
             move=makeMove(inputs,outputs,history) #Call AI for move
             if beats[move]==choice1: #Player victory
                 pwins+=1 #Add points to player
@@ -110,7 +111,7 @@ def RPS():
             print "Invalid move"
 
     myfile.close()    
-    return ("Player: " + str(pwins) + "  Cpu: " +str(cwins))
+    return ("Player: " + str(pwins) + "  Cpu: " +str(cwins) + " Total played: " + str(counter))
 
             
         
