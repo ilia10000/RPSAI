@@ -86,7 +86,7 @@ def RPS():
     inputs=[]
     outputs=[]
     counter=0
-    print("Choose 'R', 'P' or 'S' to make a move, choose 'E' to exit.")
+    print("Choose 'R', 'P' or 'S' to make a move, I for summary statistics, choose 'E' to exit.")
     #Main game loop
     while True:
         choice1 =raw_input() #Read input
@@ -94,7 +94,7 @@ def RPS():
             choice1=choice1.upper() #Standardize input to caps
         if choice1 == "E": #Exit the main game loop
             break
-        if choice1 == "S":
+        if choice1 == "I":
             print "Player: " + str(pwins) + "  Cpu: " +str(cwins)+" Ties: " + str(ties) + " Total played: " + str(counter)
         elif choice1 in list("RPS"): #Valid move
             counter += 1
