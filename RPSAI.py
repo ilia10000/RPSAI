@@ -69,10 +69,12 @@ import time
 def RPS():
     timestr = time.strftime("%Y%m%d-%H%M%S")
     name = raw_input("Name: ")
-    to_load = raw_input("Filename: ") 
-    preload = open(to_load, "a+") #File to load data from
-    history = preload.read() #Load data
-    preload.close()
+    to_load = raw_input("Filename: ")
+    history=""
+    if len(to_load)>0:
+        preload = open(to_load, "a+") #File to load data from
+        history = preload.read() #Load data
+        preload.close()
     #print history
     filename = name+"_"+timestr
     myfile = open(filename,"a+") #File to write to
