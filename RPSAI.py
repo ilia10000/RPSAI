@@ -1,15 +1,15 @@
 from random import choice
-
+form numpy import prod
 choices = list("RPS")
 window = 15
 print choices
 cwins=0
 pwins=0
 beats = {"R":"P","P":"S","S":"R"}
-
+w_algos = [w_algo1, w_algo2]
 
 #Scans for current pattern in history to predict next player move
-def makeMove(inputs,outputs,history,algo):
+def makeMove(inputs,outputs,history,w_algo, w_parameters):
     move = ""
     length = len(inputs)
     start=length
@@ -49,20 +49,14 @@ def makeMove(inputs,outputs,history,algo):
             print "r" + str(rcount)
             print "p" + str(pcount)
             print "s" + str(scount)'''
-            if algo =="1":
-                cur_weight = history.count(ins)*len(ins) # Algo 1
-            if algo == "2":
-                cur_weight = history.count(ins)*history.count(ins)*len(ins)
-            if algo == "3":
-                cur_weight = history.count(ins)*len(ins)*len(ins)
-            if algo == "4":
-                cur_weight = history.count(ins)*len(ins)*len(ins)*len(ins)
-            if algo == "5":
-                cur_weight = history.count(ins)*len(ins)*len(ins)*len(ins)*len(ins)
+            w_inputs = [history,ins]
+            cur_weight = w_algos[w_algo-1](w_inputs, w_parameters)
             if cur_weight > weight:
                 prediction = move
                 weight = cur_weight
     return beats[prediction]
+
+
 def gen_rand():
     myfile = open("Random.txt","w+")
     for i in range(10000):
@@ -72,20 +66,21 @@ def gen_rand():
     myfile.close()
     return
 
+
 #Runs rock-paper-scissors games until player exits, returns the result.
 import time
 
-def RPS():
-    timestr = time.strftime("%Y%m%d-%H%M%S")
-    name = raw_input("Name: ")
-    to_load = raw_input("Filename: ")
-    algo = raw_input("Algo: ")
-    history=""
-    if len(to_load)>0:
-        preload = open(to_load, "a+") #File to load data from
-        history = preload.read() #Load data
-        preload.close()
-    #print history
+def RPS(meta=False, name="", to_load="", algo=1, timestr=""):
+    if not meta:
+        timestr = time.strftime("%Y%m%d-%H%M%S")
+        name = raw_input("Name: ")
+        to_load = raw_input("Filename: ")
+        algo = raw_input("Algo: ")
+        history=""
+        if len(to_load)>0:
+            preload = open(to_load, "a+") #File to load data from
+            history = preload.read() #Load data
+            preload.close()
     filename = name+"_"+timestr
     metafile = filename+ "_meta"
     myfile = open(filename,"a+") #File to write to
@@ -130,9 +125,27 @@ def RPS():
                 print "Invalid move"
         if e_flag and raw_input("Quit? Y/N "):
             break
-    myfile.close()    
-    return ("Player: " + str(pwins) + "  Cpu: " +str(cwins) +" Ties: " + str(ties) + " Total played: " + str(counter))
+    myfile.close()
+    print ("Player: " + str(pwins) + "  Cpu: " +str(cwins) +" Ties: " + str(ties) + " Total played: " + str(counter))
+    return [pwins, cwins, ties, total]
 
-            
+
+def w_algo1(w_inputs,w_parameters):
+    history = w_inputs[0]
+    ins=w_inputs[1]
+    input=[history.count(ins),len(ins)]
+    return prod([i[0]**i[1] for i in zip(input,w_parameters)])
+def w_algo2(w_inputs,w_parameters):
+    history = w_inputs[0]
+    ins=w_inputs[1]
+    return (history.count(ins)**w_parameters[0])/(1.0*(len(ins)**w_parameters[1]))
+
+
+def meta(n=10, iterations=10, w_algos = [1,2] , n_w_parameters = [2,2] ):
+
+
+
+
+
         
 print RPS()
