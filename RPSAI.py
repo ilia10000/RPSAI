@@ -162,6 +162,13 @@ def RPS(meta=False, name="", to_load="", w_algo=1, timestr="", moves_in="", w_pa
         print ("w_Algo: " + str(w_algo)+ " Params: " + ", ".join(map(str,w_parameters)))
     return [pwins, cwins, ties, counter]
 
+def score_game(inputs):
+    pwins = inputs[0]
+    cwins = inputs[1]
+    ties = inputs[2]
+    counter = inputs[3]
+    #return cwins/(1.0*counter)
+    return cwins/(1.0*pwins +1.0*cwins)
 
 def param_gradient(n=10, w_algo2use =1, config_w_parameters =[[0,5],[0,5]], moves_in="", name="", to_load="", timestr="" ):
     param_names =[]
@@ -178,12 +185,12 @@ def param_gradient(n=10, w_algo2use =1, config_w_parameters =[[0,5],[0,5]], move
     to_run+= "\t"*(i+1)
     to_run+="results = RPS(True,'{0}', '{1}', {2}, '{3}', '{4}', [{5}])\n".format(name, to_load, w_algo2use, timestr, moves_in, ",".join(param_names))
     to_run+= "\t"*(i+1)
-    to_run+="score = (1.0*results[1])/(1.0*results[3])\n"
+    to_run+="score = score_game(results)\n"
     to_run+= "\t"*(i+1)
     for j in range(n-1):
         to_run+="results = RPS(True,'{0}', '{1}', {2}, '{3}', '{4}', [{5}])\n".format(name, to_load, w_algo2use, timestr, moves_in, ",".join(param_names))
         to_run+= "\t"*(i+1)
-        to_run+="score += (1.0*results[1])/(1.0*results[3])\n"
+        to_run+="score += score_game(results)\n"
         to_run+= "\t"*(i+1)
     to_run+="score = score/{0}\n".format(n)
     to_run+= "\t"*(i+1)
