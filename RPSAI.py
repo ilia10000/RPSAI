@@ -22,7 +22,12 @@ def w_algo2(w_inputs,w_parameters):
     ins=w_inputs[1]
     return (history.count(ins)**w_parameters[0])/(1.0*(len(ins)**w_parameters[1]))
 
-w_algos = [w_algo1, w_algo2]
+def w_algo3(w_inputs,w_parameters):
+    history = w_inputs[0]
+    ins=w_inputs[1]
+    return (history.count(ins)*w_parameters[0])+(len(ins)*w_parameters[1])
+
+w_algos = [w_algo1, w_algo2, w_algo3]
 #####################################################################################
 #####################################################################################
 #####################################################################################
@@ -233,4 +238,4 @@ for k in [5,15,25,35,45,55]:
     window = k
     print "Window: " + str(window)
 
-    print meta(n=4, moves_in=moves)
+    print meta(n=4, w_algos2use = [1], config_w_parameters = [[[0,10],[0,10]]], moves_in=moves)
