@@ -2,7 +2,7 @@ from random import choice
 from numpy import prod
 import time
 choices = list("RPS")
-window = 15
+window = 25
 print choices
 cwins=0
 pwins=0
@@ -157,8 +157,9 @@ def RPS(meta=False, name="", to_load="", w_algo=1, timestr="", moves_in="", w_pa
             break
     if not meta:
         myfile.close()
-    print (" Player: " + str(pwins) + "  Cpu: " +str(cwins) +" Ties: " + str(ties) + " Total played: " + str(counter))
-    print ("w_Algo: " + str(w_algo)+ " Params: " + ", ".join(map(str,w_parameters)))
+    if not meta or debug:
+        print (" Player: " + str(pwins) + "  Cpu: " +str(cwins) +" Ties: " + str(ties) + " Total played: " + str(counter))
+        print ("w_Algo: " + str(w_algo)+ " Params: " + ", ".join(map(str,w_parameters)))
     return [pwins, cwins, ties, counter]
 
 
@@ -194,11 +195,13 @@ def param_gradient(n=10, w_algo2use =1, config_w_parameters =[[0,5],[0,5]], move
     if debug:
         print to_run
     exec(to_run)
-
+    print ("w_Algo: " + str(w_algo2use)+ " Params: " + ", ".join(map(str,best_params)) + " Score: " + str(best_score))
     #print (best_params, best_score)
     return [best_params, best_score]
-debug=False
-def meta(n=10, w_algos2use = [1,2] , config_w_parameters = [[[0,5],[0,5]],[[0,5],[0,5]]], moves_in="" ):
+
+
+
+def meta(n=10, w_algos2use = [1,2] , config_w_parameters = [[[0,10],[0,10]],[[0,10],[0,10]]], moves_in="" ):
     accuracies = {}
     timestr = time.strftime("%Y%m%d-%H%M%S")
     name = raw_input("Name: ")
@@ -216,6 +219,6 @@ def meta(n=10, w_algos2use = [1,2] , config_w_parameters = [[[0,5],[0,5]],[[0,5]
 
 
 
-
+debug=False
 moves=open("sample_moves.txt", "r").read()
 print meta(moves_in=moves)
