@@ -201,13 +201,14 @@ def param_gradient(n=10, w_algo2use =1, config_w_parameters =[[0,5],[0,5]], move
 
 
 
-def meta(n=10, w_algos2use = [1,2] , config_w_parameters = [[[0,10],[0,10]],[[0,10],[0,10]]], moves_in="" ):
+def meta(n=10, w_algos2use = [1,2] , config_w_parameters = [[[0,10],[0,10]],[[0,3],[0,3]]], moves_in="", name="I", to_load="" ):
     accuracies = {}
     timestr = time.strftime("%Y%m%d-%H%M%S")
-    name = raw_input("Name: ")
-    to_load = raw_input("Filename: ")
+    #name = raw_input("Name: ")
+    #to_load = raw_input("Filename: ")
     for i in range(len(w_algos2use)):
         w_algo2use = w_algos2use[i]
+        print "Running w_algo: " + str(w_algo2use)
         accuracies[str(w_algo2use)]={}
         best = param_gradient(n, w_algo2use,config_w_parameters[i],moves_in,name,to_load, timestr)
         accuracies[str(w_algo2use)]["params"] = best[0]
@@ -221,4 +222,8 @@ def meta(n=10, w_algos2use = [1,2] , config_w_parameters = [[[0,10],[0,10]],[[0,
 
 debug=False
 moves=open("sample_moves.txt", "r").read()
-print meta(moves_in=moves)
+for k in [5,15,25,35,45,55]:
+    window = k
+    print "Window: " + str(window)
+
+    print meta(n=4, moves_in=moves)
