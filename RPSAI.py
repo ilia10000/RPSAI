@@ -174,8 +174,11 @@ def score_game(inputs):
     counter = inputs[3]
     #return cwins/(1.0*counter)
     return cwins/(1.0*pwins +1.0*cwins)
+#####################################################################################
+#################################### REGRESSORS #####################################
+#####################################################################################
 
-def param_gradient(n=10, w_algo2use =1, config_w_parameters =[[0,5],[0,5]], moves_in="", name="", to_load="", timestr="" ):
+def param_brute_force(n=10, w_algo2use =1, config_w_parameters =[[0,5],[0,5]], moves_in="", name="", to_load="", timestr="" ):
     param_names =[]
     best_params=[]
     best_score = 0
@@ -211,6 +214,27 @@ def param_gradient(n=10, w_algo2use =1, config_w_parameters =[[0,5],[0,5]], move
     #print (best_params, best_score)
     return [best_params, best_score]
 
+def param_fwd_reg(n=10, w_algo2use =1, config_w_parameters =[[0,5],[0,5]], moves_in="", name="", to_load="", timestr="" ):
+    param_names =[]
+    best_params=[]
+    best_score = 0
+    for i in range(len(config_w_parameters)):
+        best_params.append(config_w_parameters[i][0])
+        param_names.append("param{0}".format(i))
+    for i in range(len(config_w_parameters)):
+        params = best_params
+        for j in range(config_w_parameters[i][0],config_w_parameters[i][1]):
+            params[i]=j
+            cur_score = 0
+            for k in range(n):
+                results = RPS(True,name, to_load, w_algo2use, timestr, moves_in, params)
+                cur_score += score_game(results)
+            cur_score = cur_score/n
+            if cur_score < best_score:
+                break
+            best_params = params
+            best_score = cur_score
+    return [best_params, best_score]
 
 
 def meta(n=10, w_algos2use = [1,2] , config_w_parameters = [[[0,10],[0,10]],[[0,3],[0,3]]], moves_in="", name="I", to_load="" ):
@@ -222,13 +246,15 @@ def meta(n=10, w_algos2use = [1,2] , config_w_parameters = [[[0,10],[0,10]],[[0,
         w_algo2use = w_algos2use[i]
         print "Running w_algo: " + str(w_algo2use)
         accuracies[str(w_algo2use)]={}
-        best = param_gradient(n, w_algo2use,config_w_parameters[i],moves_in,name,to_load, timestr)
+        best = param_fwd_reg(n, w_algo2use,config_w_parameters[i],moves_in,name,to_load, timestr)
         accuracies[str(w_algo2use)]["params"] = best[0]
         accuracies[str(w_algo2use)]["score"] = best[1]
 
     return accuracies
 
-
+#####################################################################################
+#####################################################################################
+#####################################################################################
 
 
 
