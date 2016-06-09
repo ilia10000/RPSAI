@@ -214,16 +214,16 @@ def param_brute_force(n=10, w_algo2use =1, config_w_parameters =[[0,5],[0,5]], m
     #print (best_params, best_score)
     return [best_params, best_score]
 
-def param_fwd_reg(n=10, w_algo2use =1, config_w_parameters =[[0,5],[0,5]], moves_in="", name="", to_load="", timestr="" ):
+def param_regression(n=10, w_algo2use =1, config_w_parameters =[[0,5],[0,5]], moves_in="", name="", to_load="", timestr="", direction=0 ):
     param_names =[]
     best_params=[]
     best_score = 0
     for i in range(len(config_w_parameters)):
-        best_params.append(config_w_parameters[i][0])
+        best_params.append(config_w_parameters[i][direction])
         param_names.append("param{0}".format(i))
     for i in range(len(config_w_parameters)):
         params = best_params
-        for j in range(config_w_parameters[i][0],config_w_parameters[i][1]):
+        for j in range(config_w_parameters[i][0],config_w_parameters[i][1])[::(direction*(-2))+1]:
             params[i]=j
             cur_score = 0
             for k in range(n):
@@ -232,10 +232,10 @@ def param_fwd_reg(n=10, w_algo2use =1, config_w_parameters =[[0,5],[0,5]], moves
             cur_score = cur_score/n
             if cur_score < best_score:
                 break
-            best_params = params
-            best_score = cur_score
+            else:
+                best_params = params
+                best_score = cur_score
     return [best_params, best_score]
-
 
 def meta(n=10, w_algos2use = [1,2] , config_w_parameters = [[[0,10],[0,10]],[[0,3],[0,3]]], moves_in="", name="I", to_load="" ):
     accuracies = {}
@@ -246,7 +246,7 @@ def meta(n=10, w_algos2use = [1,2] , config_w_parameters = [[[0,10],[0,10]],[[0,
         w_algo2use = w_algos2use[i]
         print "Running w_algo: " + str(w_algo2use)
         accuracies[str(w_algo2use)]={}
-        best = param_fwd_reg(n, w_algo2use,config_w_parameters[i],moves_in,name,to_load, timestr)
+        best = param_regression(n, w_algo2use,config_w_parameters[i],moves_in,name,to_load, timestr, direction=1)
         accuracies[str(w_algo2use)]["params"] = best[0]
         accuracies[str(w_algo2use)]["score"] = best[1]
 
