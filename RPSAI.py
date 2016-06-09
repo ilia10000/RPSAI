@@ -246,7 +246,7 @@ def param_regression(n=10, w_algo2use =1, config_w_parameters =[[0,5,1],[0,5,1]]
                     print "uhoh"
                     break
             elif cur_score >= best_score:
-                best_params = params
+                best_params = [p for p in params]
                 best_score = cur_score
             print best_score, best_params
     print ("w_Algo: " + str(w_algo2use)+ " Params: " + ", ".join(map(str,best_params)) + " Score: " + str(best_score))
