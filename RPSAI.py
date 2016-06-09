@@ -279,4 +279,4 @@ for k in [5,15,25,35,45,55]:
     window = k
     print "Window: " + str(window)
 
-    print meta(n=4, w_algos2use = [1,2,3], config_w_parameters = [[[0,10,0.5],[0,10,0.5]],[[0,10,0.5],[0,10,0.5]],[[0,10,0.5],[0,10,0.5]]], moves_in=moves)
+    print meta(n=4, w_algos2use = [1,3], config_w_parameters = [[[1,3,0.1],[7,10,0.1]],[[0,1,0.1],[7,10,0.1]]], moves_in=moves)
