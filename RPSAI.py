@@ -1,5 +1,5 @@
 from random import choice
-from numpy import prod
+from numpy import prod, arange
 import time
 choices = list("RPS")
 window = 25
@@ -20,7 +20,7 @@ def w_algo1(w_inputs,w_parameters):
 def w_algo2(w_inputs,w_parameters):
     history = w_inputs[0]
     ins=w_inputs[1]
-    return (history.count(ins)**w_parameters[0])/(1.0*(len(ins)**w_parameters[1]))
+    return (history.count(ins)*w_parameters[0])/(1+1.0*(len(ins)*w_parameters[1]))
 
 def w_algo3(w_inputs,w_parameters):
     history = w_inputs[0]
@@ -178,7 +178,7 @@ def score_game(inputs):
 #################################### REGRESSORS #####################################
 #####################################################################################
 
-def param_brute_force(n=10, w_algo2use =1, config_w_parameters =[[0,5],[0,5]], moves_in="", name="", to_load="", timestr="" ):
+def param_brute_force(n=10, w_algo2use =1, config_w_parameters =[[0,5,1],[0,5,1]], moves_in="", name="", to_load="", timestr="" ):
     param_names =[]
     best_params=[]
     best_score = 0
@@ -189,7 +189,7 @@ def param_brute_force(n=10, w_algo2use =1, config_w_parameters =[[0,5],[0,5]], m
     to_run = ""
     for i in range(len(config_w_parameters)):
         to_run+="\t"*i
-        to_run+= "for {0} in range({1},{2}):\n".format(param_names[i],config_w_parameters[i][0], config_w_parameters[i][1])
+        to_run+= "for {0} in arange({1},{2},{3}):\n".format(param_names[i],config_w_parameters[i][0], config_w_parameters[i][1],config_w_parameters[i][2])
     to_run+= "\t"*(i+1)
     to_run+="results = RPS(True,'{0}', '{1}', {2}, '{3}', '{4}', [{5}])\n".format(name, to_load, w_algo2use, timestr, moves_in, ",".join(param_names))
     to_run+= "\t"*(i+1)
@@ -214,30 +214,45 @@ def param_brute_force(n=10, w_algo2use =1, config_w_parameters =[[0,5],[0,5]], m
     #print (best_params, best_score)
     return [best_params, best_score]
 
-def param_regression(n=10, w_algo2use =1, config_w_parameters =[[0,5],[0,5]], moves_in="", name="", to_load="", timestr="", direction=0 ):
+def param_regression(n=10, w_algo2use =1, config_w_parameters =[[0,5,1],[0,5,1]], moves_in="", name="", to_load="", timestr="", direction=0, fast_mode = False ):
     param_names =[]
     best_params=[]
-    best_score = 0
+
+
     for i in range(len(config_w_parameters)):
-        best_params.append(config_w_parameters[i][direction])
+        best_params.append(config_w_parameters[i][direction]-direction*config_w_parameters[i][2])
         param_names.append("param{0}".format(i))
+    best_score = 0
+    for k in range(n):
+        results = RPS(True,name, to_load, w_algo2use, timestr, moves_in, best_params)
+        best_score += score_game(results)
+    best_score = best_score/n
+    print best_score, best_params
     for i in range(len(config_w_parameters)):
-        params = best_params
-        for j in range(config_w_parameters[i][0],config_w_parameters[i][1])[::(direction*(-2))+1]:
+        params = [p for p in best_params]
+
+        for j in arange(config_w_parameters[i][0]+1*config_w_parameters[i][2]-direction*config_w_parameters[i][2],config_w_parameters[i][1]-direction*config_w_parameters[i][2],config_w_parameters[i][2])[::(direction*(-2))+1]:
             params[i]=j
+            print best_params, params
+
             cur_score = 0
             for k in range(n):
                 results = RPS(True,name, to_load, w_algo2use, timestr, moves_in, params)
                 cur_score += score_game(results)
             cur_score = cur_score/n
             if cur_score < best_score:
-                break
-            else:
+                print cur_score, best_score
+                if fast_mode:
+                    print "uhoh"
+                    break
+            elif cur_score >= best_score:
                 best_params = params
                 best_score = cur_score
+            print best_score, best_params
+    print ("w_Algo: " + str(w_algo2use)+ " Params: " + ", ".join(map(str,best_params)) + " Score: " + str(best_score))
     return [best_params, best_score]
 
-def meta(n=10, w_algos2use = [1,2] , config_w_parameters = [[[0,10],[0,10]],[[0,3],[0,3]]], moves_in="", name="I", to_load="" ):
+def meta(n=10, w_algos2use = [1,2] , config_w_parameters = [[[0,10,1],[0,10,1]],[[0,3,1],[0,3,1]]], moves_in="", name="I", to_load="" ):
     accuracies = {}
     timestr = time.strftime("%Y%m%d-%H%M%S")
     #name = raw_input("Name: ")
@@ -246,7 +261,7 @@ def meta(n=10, w_algos2use = [1,2] , config_w_parameters = [[[0,10],[0,10]],[[0,
         w_algo2use = w_algos2use[i]
         print "Running w_algo: " + str(w_algo2use)
         accuracies[str(w_algo2use)]={}
-        best = param_regression(n, w_algo2use,config_w_parameters[i],moves_in,name,to_load, timestr, direction=1)
+        best = param_regression(n, w_algo2use,config_w_parameters[i],moves_in,name,to_load, timestr, direction = 1, fast_mode = False)
         accuracies[str(w_algo2use)]["params"] = best[0]
         accuracies[str(w_algo2use)]["score"] = best[1]
 
@@ -264,4 +279,4 @@ for k in [5,15,25,35,45,55]:
     window = k
     print "Window: " + str(window)
 
-    print meta(n=4, w_algos2use = [1], config_w_parameters = [[[0,10],[0,10]]], moves_in=moves)
+    print meta(n=4, w_algos2use = [1,2,3], config_w_parameters = [[[0,10,0.5],[0,10,0.5]],[[0,10,0.5],[0,10,0.5]],[[0,10,0.5],[0,10,0.5]]], moves_in=moves)
