@@ -19,6 +19,6 @@ Additional meta-functionality:
 Research:
 - Identify optimal tracking-window length algorithm
 - Create more test data
-- Do formal null hypothesis for Problem 1
-- Formalize Problem 2
+- Do formal null hypothesis for Problem 1: Do there exist predictable (non-random) chains in human impulsive behavior?
+- Formalize Problem 2: What are the lengths of these chains?
 - Continue reading papers

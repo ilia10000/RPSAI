@@ -1,6 +1,7 @@
 from random import choice
 from numpy import prod, arange
 import time
+import os
 choices = list("RPS")
 window = 25
 print choices
@@ -99,15 +100,21 @@ def gen_rand():
 def RPS(meta=False, name="", to_load="", w_algo=1, timestr="", moves_in="", w_parameters=[1,1]):
     if not meta:
         timestr = time.strftime("%Y%m%d-%H%M%S")
-        name = raw_input("Name: ")
+        name = raw_input("First Name: ") + "_" + raw_input("Last Name: ")
         to_load = raw_input("Filename: ")
-        w_algo = raw_input("Algo: ")
+        w_algo = input("Algo: ")
     history=""
     if len(to_load)>0:
         preload = open(to_load, "a+") #File to load data from
         history = preload.read() #Load data
         preload.close()
-    filename = name+"_"+timestr
+    filename = name+"/"+name+"_"+timestr
+    if not os.path.exists(os.path.dirname(filename)):
+        try:
+            os.makedirs(os.path.dirname(filename))
+        except OSError as exc: # Guard against race condition
+            if exc.errno != errno.EEXIST:
+                raise
     metafile = filename+ "_meta"
     if not meta:
         myfile = open(filename,"a+") #File to write to
@@ -272,11 +279,14 @@ def meta(n=10, w_algos2use = [1,2] , config_w_parameters = [[[0,10,1],[0,10,1]],
 #####################################################################################
 
 
+def run_meta():
+    debug=False
+    moves=open("sample_moves.txt", "r").read()
+    for k in [5,15,25,35,45,55]:
+        window = k
+        print "Window: " + str(window)
 
-debug=False
-moves=open("sample_moves.txt", "r").read()
-for k in [5,15,25,35,45,55]:
-    window = k
-    print "Window: " + str(window)
+        print meta(n=4, w_algos2use = [1,3], config_w_parameters = [[[1,3,0.1],[7,10,0.1]],[[0,1,0.1],[7,10,0.1]]], moves_in=moves)
 
-    print meta(n=4, w_algos2use = [1,3], config_w_parameters = [[[1,3,0.1],[7,10,0.1]],[[0,1,0.1],[7,10,0.1]]], moves_in=moves)
+if __name__ == "__main__":
+    print RPS()
