@@ -1,20 +1,22 @@
 Additional features to track:
-- Play speed (overall and between each move)
+- Play speed (overall and between each move) #DONE
 - Every play by both AI and Player
-- Number of plays, wins, losses, ties
-- Weighting algorithm used
+- Number of plays, wins, losses, ties #DONE
+- Weighting algorithm used #DONE
 - Weight attributed to each potential length
 - Initial conditions (trained vs untrained)
 
 Additional in-game functionality:
-- Force player to play fast (counter or depleting bar?)
-- Remove need to press "Enter" key
+- Force player to play fast (counter or depleting bar?) #DONE
+- Remove need to press "Enter" key #Added ability to type many moves
+- Change key mapping to adjacent keys
 
 Additional meta-functionality:
 - Create nice CSVs/datastores
-- Amalgamate data by name
+- Amalgamate data by name #Added nice folder structure
 - Interactive GUI
 - Wrapper script for launch
+- Fix parameter display upon quitting game. 
 
 Research:
 - Identify optimal tracking-window length algorithm
@@ -22,3 +24,4 @@ Research:
 - Do formal null hypothesis for Problem 1: Do there exist predictable (non-random) chains in human impulsive behavior?
 - Formalize Problem 2: What are the lengths of these chains?
 - Continue reading papers
+- Limit history to preloaded file, don't add in current moves, this will allow us to study performance against past data. 
