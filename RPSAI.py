@@ -186,7 +186,7 @@ def RPS(meta=False,debug=False, name="", to_load="", w_algo=1, timestr="", moves
                 
             else:
                 print "Invalid move"
-        if e_flag and (meta or raw_input("Quit? Y/N ")):
+        if e_flag and (meta or raw_input("Quit? Y/N ").lower()=="y"):
             break
     if not meta:
         myfile.close()
@@ -306,7 +306,7 @@ def run_meta(debug=False):
         window = k
         print "Window: " + str(window)
 
-        print meta(n=4, w_algos2use = [1,3,4], config_w_parameters = [[[2.8,3,0.1],[10,11,0.1]],[[0,1,0.1],[7,10,0.2]],[[0,10,1],[0,10,1],[0,10,1]]], moves_in=moves)
+        print meta(n=4, w_algos2use = [3], config_w_parameters = [[[-10,10,2],[-10,10,2]]], moves_in=moves)
 
 if __name__ == "__main__":
     print RPS()
