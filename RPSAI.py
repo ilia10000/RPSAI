@@ -8,6 +8,7 @@ print choices
 cwins=0
 pwins=0
 beats = {"R":"P","P":"S","S":"R"}
+alt_moves = {"2":"P","3":"S","1":"R"}
 
 #####################################################################################
 #################################### ALGORITHMS #####################################
@@ -105,7 +106,7 @@ def gen_rand():
 
 #Runs rock-paper-scissors games until player exits, returns the result.
 
-def RPS(meta=False,debug=False, name="", to_load="", w_algo=1, timestr="", moves_in="", w_parameters=[], threshold = 0.5, direction=0):
+def RPS(meta=False,debug=False, name="", to_load="", w_algo=1, timestr="", moves_in="", w_parameters=[], threshold = 0.5, direction=0, alt_keys=True):
     if not meta:
         timestr = time.strftime("%Y%m%d-%H%M%S")
         name = raw_input("First Name: ") + "_" + raw_input("Last Name: ")
@@ -152,6 +153,8 @@ def RPS(meta=False,debug=False, name="", to_load="", w_algo=1, timestr="", moves
         else:
             average=elapsed
         for choice1 in choices:
+            if alt_keys and choice1 in alt_moves.keys():
+                choice1=alt_moves[choice1]
             if choice1!="": #Avoids error with empty input
                 choice1=choice1.upper() #Standardize input to caps
             if choice1 == "E": #Exit the main game loop
