@@ -24,7 +24,7 @@ def w_algo2(w_inputs,w_parameters=[0.2,9.2]):
     ins=w_inputs[1]
     return (history.count(ins)*w_parameters[0])/(1+1.0*(len(ins)*w_parameters[1]))
 
-def w_algo3(w_inputs,w_parameters=[1,1]):
+def w_algo3(w_inputs,w_parameters=[1,8]):
     history = w_inputs[0]
     ins=w_inputs[1]
     return (history.count(ins)*w_parameters[0])+(len(ins)*w_parameters[1])
@@ -33,8 +33,16 @@ def w_algo4(w_inputs,w_parameters=[1,9,0.1]):
     ins=w_inputs[1]
     interaction = history.count(ins)*len(ins)
     return (history.count(ins)*w_parameters[0])+(len(ins)*w_parameters[1]) + (interaction*w_parameters[2])
+def w_algo5(w_inputs,w_parameters=[2,60,14]):
+    history = w_inputs[0]
+    ins=w_inputs[1]
+    move=w_inputs[2]
+    freq = history.count(ins+move)
+    prob = float(freq)/history.count(ins)
+    #interaction = history.count(ins)*len(ins)
+    return (freq*w_parameters[0])+(prob*w_parameters[1]) + (len(ins)*w_parameters[2])
 
-w_algos = [w_algo1, w_algo2, w_algo3, w_algo4]
+w_algos = [w_algo1, w_algo2, w_algo3, w_algo4, w_algo5]
 #####################################################################################
 #####################################################################################
 #####################################################################################
@@ -83,7 +91,7 @@ def makeMove(inputs,outputs,history,w_algo, w_parameters):
             print "r" + str(rcount)
             print "p" + str(pcount)
             print "s" + str(scount)'''
-            w_inputs = [history,ins]
+            w_inputs = [history,ins,move]
             if len(w_parameters)>0:
                 cur_weight = w_algos[w_algo-1](w_inputs, w_parameters)
             else:
@@ -309,7 +317,7 @@ def run_meta(debug=False):
         window = k
         print "Window: " + str(window)
 
-        print meta(n=4, w_algos2use = [3], config_w_parameters = [[[-10,10,2],[-10,10,2]]], moves_in=moves, fast = False)
+        print meta(n=4, w_algos2use = [5], config_w_parameters = [[[-10,10,2],[-100,100,10],[-10,20,2]]], moves_in=moves, fast = False)
 
 if __name__ == "__main__":
     print RPS()

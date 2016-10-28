@@ -17,6 +17,8 @@ Additional meta-functionality:
 - Interactive GUI
 - Wrapper script for launch
 - Fix parameter display upon quitting game. 
+- Need much larger dataset to properly test larger windows
+- Save log file and separate analysis result file
 
 Research:
 - Identify optimal tracking-window length algorithm
