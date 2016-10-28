@@ -114,7 +114,7 @@ def gen_rand():
 
 #Runs rock-paper-scissors games until player exits, returns the result.
 
-def RPS(meta=False,debug=False, name="", to_load="", w_algo=1, timestr="", moves_in="", w_parameters=[], threshold = 0.5, direction=0, alt_keys=True):
+def RPS(meta=False,debug=False, name="", to_load="", w_algo=1, timestr="", moves_in="", w_parameters=[], threshold = 0.5, faster_than=1, alt_keys=True):
     if not meta:
         timestr = time.strftime("%Y%m%d-%H%M%S")
         name = raw_input("First Name: ") + "_" + raw_input("Last Name: ")
@@ -171,7 +171,7 @@ def RPS(meta=False,debug=False, name="", to_load="", w_algo=1, timestr="", moves
             if choice1 == "I":
                 print "Player: " + str(pwins) + "  Cpu: " +str(cwins)+" Ties: " + str(ties) + " Total played: " + str(counter)
             elif choice1 in list("RPS"): #Valid move
-                if (direction and average > threshold) or (average <= threshold):
+                if meta or (not faster_than and average > threshold) or (faster_than and average <= threshold):
                     counter += 1
                     move=makeMove(inputs,outputs,history,w_algo, w_parameters) #Call AI for move
                     if beats[move]==choice1: #Player victory
@@ -190,7 +190,7 @@ def RPS(meta=False,debug=False, name="", to_load="", w_algo=1, timestr="", moves
                     outputs.append(move)
                     if not meta:
                         myfile.write(choice1)
-                elif direction:
+                elif not faster_than:
                     print "Please play slower than {0} secs per move".format(threshold)
                 else:
                     print "Please play faster than {0} secs per move".format(threshold)
@@ -253,7 +253,7 @@ def param_brute_force(n=10, w_algo2use =1, config_w_parameters =[[0,5,1],[0,5,1]
     #print (best_params, best_score)
     return [best_params, best_score]
 
-def param_regression(debug=False,n=10, w_algo2use =1, config_w_parameters =[[0,5,1],[0,5,1]], moves_in="", name="", to_load="", timestr="", direction=0, fast_mode = False ):
+def param_regression(f, debug=False,n=10, w_algo2use =1, config_w_parameters =[[0,5,1],[0,5,1]], moves_in="", name="", to_load="", timestr="", direction=0, fast_mode = False ):
     param_names =[]
     best_params=[]
 
@@ -267,43 +267,58 @@ def param_regression(debug=False,n=10, w_algo2use =1, config_w_parameters =[[0,5
         best_score += score_game(results)
     best_score = best_score/n
     print best_score, best_params
+    f.write("{" + "'best_score': {0}, 'best_params': '{1}'".format(best_score, best_params)+"}")
     for i in range(len(config_w_parameters)):
         params = [p for p in best_params]
 
         for j in arange(config_w_parameters[i][0]+1*config_w_parameters[i][2]-direction*config_w_parameters[i][2],config_w_parameters[i][1]-direction*config_w_parameters[i][2],config_w_parameters[i][2])[::(direction*(-2))+1]:
             params[i]=j
             print best_params, params
-
+            f.write("{" + "'cur_params': '{0}', 'best_params': '{1}'".format(params, best_params)+"}")
             cur_score = 0
             for k in range(n):
                 results = RPS(True,debug,name, to_load, w_algo2use, timestr, moves_in, params)
                 cur_score += score_game(results)
             cur_score = cur_score/n
+            print cur_score, best_score
+            f.write("{" + "'cur_score': {0}, 'best_score': {1}".format(cur_score, best_score)+"}") 
             if cur_score < best_score:
-                print cur_score, best_score
                 if fast_mode:
                     print "Local Minima reached"
+                    f.write("Local Minima reached")
                     break
             elif cur_score >= best_score:
                 best_params = [p for p in params]
                 best_score = cur_score
             print best_score, best_params
+            f.write("{" + "'best_score': {0}, 'best_params': '{1}'".format(best_score, best_params)+"}") 
+            
     print ("w_Algo: " + str(w_algo2use)+ " Params: " + ", ".join(map(str,best_params)) + " Score: " + str(best_score))
+    f.write("w_Algo: " + str(w_algo2use)+ " Params: " + ", ".join(map(str,best_params)) + " Score: " + str(best_score))
     return [best_params, best_score]
 
-def meta(debug=False, n=10, w_algos2use = [1,2] , config_w_parameters = [[[0,10,1],[0,10,1]],[[0,3,1],[0,3,1]]], moves_in="", name="I", to_load="", fast=False ):
+def meta(debug=False, n=10, w_algos2use = [1,2] , config_w_parameters = [[[0,10,1],[0,10,1]],[[0,3,1],[0,3,1]]], moves_in="", name="I", to_load="", fast=False, direction=1 ):
     accuracies = {}
     timestr = time.strftime("%Y%m%d-%H%M%S")
     #name = raw_input("Name: ")
     #to_load = raw_input("Filename: ")
+    filename = "meta_logs"+"/"+timestr
+    if not os.path.exists(os.path.dirname(filename)):
+        try:
+            os.makedirs(os.path.dirname(filename))
+        except OSError as exc: # Guard against race condition
+            if exc.errno != errno.EEXIST:
+                raise
+    f = open(filename,"w")
     for i in range(len(w_algos2use)):
         w_algo2use = w_algos2use[i]
         print "Running w_algo: " + str(w_algo2use)
+        f.write("Running w_algo: " + str(w_algo2use))
         accuracies[str(w_algo2use)]={}
-        best = param_regression(debug, n, w_algo2use,config_w_parameters[i],moves_in,name,to_load, timestr, direction = 1, fast_mode = fast)
+        best = param_regression(f, debug, n, w_algo2use,config_w_parameters[i],moves_in,name,to_load, timestr, direction = direction, fast_mode = fast)
         accuracies[str(w_algo2use)]["params"] = best[0]
         accuracies[str(w_algo2use)]["score"] = best[1]
-
+    f.close()
     return accuracies
 
 #####################################################################################
@@ -317,7 +332,7 @@ def run_meta(debug=False):
         window = k
         print "Window: " + str(window)
 
-        print meta(n=4, w_algos2use = [5], config_w_parameters = [[[-10,10,2],[-100,100,10],[-10,20,2]]], moves_in=moves, fast = False)
+        print meta(n=4, w_algos2use = [5], config_w_parameters = [[[-10,10,2],[-100,100,10],[-10,20,2]]], moves_in=moves, fast = False, direction=1)
 
 if __name__ == "__main__":
     print RPS()

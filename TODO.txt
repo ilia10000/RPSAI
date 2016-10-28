@@ -18,7 +18,9 @@ Additional meta-functionality:
 - Wrapper script for launch
 - Fix parameter display upon quitting game. 
 - Need much larger dataset to properly test larger windows
-- Save log file and separate analysis result file
+- Save log file #DONE
+- Save separate analysis result file
+- Pass window variable as parameter instead of as global var
 
 Research:
 - Identify optimal tracking-window length algorithm
