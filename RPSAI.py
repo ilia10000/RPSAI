@@ -153,11 +153,10 @@ def RPS(meta=False,debug=False, name="", to_load="", w_algo=1, timestr="", moves
         else:
             average=elapsed
         for choice1 in choices:
-            choice1=choice1.upper()
-            if not meta and alt_keys and choice1 in alt_moves.keys():
-                choice1=alt_moves[choice1]
             if choice1!="": #Avoids error with empty input
                 choice1=choice1.upper() #Standardize input to caps
+            if not meta and alt_keys and choice1 in alt_moves.keys():
+                choice1=alt_moves[choice1]
             if choice1 == "E": #Exit the main game loop
                 e_flag = True
                 break
