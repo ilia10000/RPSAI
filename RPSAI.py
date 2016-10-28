@@ -153,7 +153,8 @@ def RPS(meta=False,debug=False, name="", to_load="", w_algo=1, timestr="", moves
         else:
             average=elapsed
         for choice1 in choices:
-            if alt_keys and choice1 in alt_moves.keys():
+            choice1=choice1.upper()
+            if not meta and alt_keys and choice1 in alt_moves.keys():
                 choice1=alt_moves[choice1]
             if choice1!="": #Avoids error with empty input
                 choice1=choice1.upper() #Standardize input to caps
@@ -283,7 +284,7 @@ def param_regression(debug=False,n=10, w_algo2use =1, config_w_parameters =[[0,5
     print ("w_Algo: " + str(w_algo2use)+ " Params: " + ", ".join(map(str,best_params)) + " Score: " + str(best_score))
     return [best_params, best_score]
 
-def meta(debug=False, n=10, w_algos2use = [1,2] , config_w_parameters = [[[0,10,1],[0,10,1]],[[0,3,1],[0,3,1]]], moves_in="", name="I", to_load="" ):
+def meta(debug=False, n=10, w_algos2use = [1,2] , config_w_parameters = [[[0,10,1],[0,10,1]],[[0,3,1],[0,3,1]]], moves_in="", name="I", to_load="", fast=False ):
     accuracies = {}
     timestr = time.strftime("%Y%m%d-%H%M%S")
     #name = raw_input("Name: ")
@@ -292,7 +293,7 @@ def meta(debug=False, n=10, w_algos2use = [1,2] , config_w_parameters = [[[0,10,
         w_algo2use = w_algos2use[i]
         print "Running w_algo: " + str(w_algo2use)
         accuracies[str(w_algo2use)]={}
-        best = param_regression(debug, n, w_algo2use,config_w_parameters[i],moves_in,name,to_load, timestr, direction = 1, fast_mode = False)
+        best = param_regression(debug, n, w_algo2use,config_w_parameters[i],moves_in,name,to_load, timestr, direction = 1, fast_mode = fast)
         accuracies[str(w_algo2use)]["params"] = best[0]
         accuracies[str(w_algo2use)]["score"] = best[1]
 
@@ -309,7 +310,7 @@ def run_meta(debug=False):
         window = k
         print "Window: " + str(window)
 
-        print meta(n=4, w_algos2use = [3], config_w_parameters = [[[-10,10,2],[-10,10,2]]], moves_in=moves)
+        print meta(n=4, w_algos2use = [3], config_w_parameters = [[[-10,10,2],[-10,10,2]]], moves_in=moves, fast = False)
 
 if __name__ == "__main__":
     print RPS()
