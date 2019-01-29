@@ -4,7 +4,7 @@ import time
 import os
 choices = list("RPS")
 window = 25
-print choices
+print (choices)
 cwins=0
 pwins=0
 beats = {"R":"P","P":"S","S":"R"}
@@ -117,9 +117,9 @@ def gen_rand():
 def RPS(meta=False,debug=False, name="", to_load="", w_algo=1, timestr="", moves_in="", w_parameters=[], threshold = 0.5, faster_than=1, alt_keys=True):
     if not meta:
         timestr = time.strftime("%Y%m%d-%H%M%S")
-        name = raw_input("First Name: ") + "_" + raw_input("Last Name: ")
-        to_load = raw_input("Filename to load: ")
-        w_algo = input("Algo: ")
+        name = str(input("First Name: ")) + "_" + str(input("Last Name: "))
+        to_load = str(input("Filename to load: "))
+        w_algo = int(input("Algo: "))
     history=""
     if len(to_load)>0:
         preload = open(to_load, "a+") #File to load data from
@@ -151,7 +151,7 @@ def RPS(meta=False,debug=False, name="", to_load="", w_algo=1, timestr="", moves
         e_flag=False
         start = time.time()
         if moves_in=="":
-            choices =raw_input() #Read input
+            choices =str(input()) #Read input
         else:
             choices = moves_in
             moves_in =""
@@ -169,7 +169,7 @@ def RPS(meta=False,debug=False, name="", to_load="", w_algo=1, timestr="", moves
                 e_flag = True
                 break
             if choice1 == "I":
-                print "Player: " + str(pwins) + "  Cpu: " +str(cwins)+" Ties: " + str(ties) + " Total played: " + str(counter)
+                print ("Player: " + str(pwins) + "  Cpu: " +str(cwins)+" Ties: " + str(ties) + " Total played: " + str(counter))
             elif choice1 in list("RPS"): #Valid move
                 if meta or (not faster_than and average > threshold) or (faster_than and average <= threshold):
                     counter += 1
@@ -181,9 +181,9 @@ def RPS(meta=False,debug=False, name="", to_load="", w_algo=1, timestr="", moves
                     elif move==choice1:
                         ties +=1
                     if not meta:
-                        print "Time: " + str(average)
-                        print (choice1 + "  vs.  " + move) #Display round result
-                        print str(pwins) + " " + str(cwins) #Score update
+                        print ("Time: " + str(average))
+                        print ((choice1 + "  vs.  " + move)) #Display round result
+                        print (str(pwins) + " " + str(cwins)) #Score update
                     if len(inputs)>1:
                         history+=inputs[-2]
                     inputs.append(choice1)
@@ -191,13 +191,13 @@ def RPS(meta=False,debug=False, name="", to_load="", w_algo=1, timestr="", moves
                     if not meta:
                         myfile.write(choice1)
                 elif not faster_than:
-                    print "Please play slower than {0} secs per move".format(threshold)
+                    print ("Please play slower than {0} secs per move".format(threshold))
                 else:
-                    print "Please play faster than {0} secs per move".format(threshold)
+                    print ("Please play faster than {0} secs per move".format(threshold))
                 
             else:
-                print "Invalid move"
-        if e_flag and (meta or raw_input("Quit? Y/N ").lower()=="y"):
+                print ("Invalid move")
+        if e_flag and (meta or str(input("Quit? Y/N ")).lower()=="y"):
             break
     if not meta:
         myfile.close()
@@ -247,7 +247,7 @@ def param_brute_force(n=10, w_algo2use =1, config_w_parameters =[[0,5,1],[0,5,1]
     to_run+= "\t"*(i+2)
     to_run+="best_params = [{0}]\n".format(",".join(param_names))
     if debug:
-        print to_run
+        print (to_run)
     exec(to_run)
     print ("w_Algo: " + str(w_algo2use)+ " Params: " + ", ".join(map(str,best_params)) + " Score: " + str(best_score))
     #print (best_params, best_score)
@@ -266,31 +266,31 @@ def param_regression(f, debug=False,n=10, w_algo2use =1, config_w_parameters =[[
         results = RPS(True,debug,name, to_load, w_algo2use, timestr, moves_in, best_params)
         best_score += score_game(results)
     best_score = best_score/n
-    print best_score, best_params
+    print (best_score, best_params)
     f.write("{" + "'best_score': {0}, 'best_params': '{1}'".format(best_score, best_params)+"}")
     for i in range(len(config_w_parameters)):
         params = [p for p in best_params]
 
         for j in arange(config_w_parameters[i][0]+1*config_w_parameters[i][2]-direction*config_w_parameters[i][2],config_w_parameters[i][1]-direction*config_w_parameters[i][2],config_w_parameters[i][2])[::(direction*(-2))+1]:
             params[i]=j
-            print best_params, params
+            print (best_params, params)
             f.write("{" + "'cur_params': '{0}', 'best_params': '{1}'".format(params, best_params)+"}")
             cur_score = 0
             for k in range(n):
                 results = RPS(True,debug,name, to_load, w_algo2use, timestr, moves_in, params)
                 cur_score += score_game(results)
             cur_score = cur_score/n
-            print cur_score, best_score
+            print (cur_score, best_score)
             f.write("{" + "'cur_score': {0}, 'best_score': {1}".format(cur_score, best_score)+"}") 
             if cur_score < best_score:
                 if fast_mode:
-                    print "Local Minima reached"
+                    print ("Local Minima reached")
                     f.write("Local Minima reached")
                     break
             elif cur_score >= best_score:
                 best_params = [p for p in params]
                 best_score = cur_score
-            print best_score, best_params
+            print (best_score, best_params)
             f.write("{" + "'best_score': {0}, 'best_params': '{1}'".format(best_score, best_params)+"}") 
             
     print ("w_Algo: " + str(w_algo2use)+ " Params: " + ", ".join(map(str,best_params)) + " Score: " + str(best_score))
@@ -312,7 +312,7 @@ def meta(debug=False, n=10, w_algos2use = [1,2] , config_w_parameters = [[[0,10,
     f = open(filename,"w")
     for i in range(len(w_algos2use)):
         w_algo2use = w_algos2use[i]
-        print "Running w_algo: " + str(w_algo2use)
+        print ("Running w_algo: " + str(w_algo2use))
         f.write("Running w_algo: " + str(w_algo2use))
         accuracies[str(w_algo2use)]={}
         best = param_regression(f, debug, n, w_algo2use,config_w_parameters[i],moves_in,name,to_load, timestr, direction = direction, fast_mode = fast)
@@ -330,9 +330,9 @@ def run_meta(debug=False):
     moves=open("sample_moves.txt", "r").read()
     for k in [5,15,25,35]:
         window = k
-        print "Window: " + str(window)
+        print ("Window: " + str(window))
 
-        print meta(n=4, w_algos2use = [5], config_w_parameters = [[[-10,10,2],[-100,100,10],[-10,20,2]]], moves_in=moves, fast = False, direction=1)
+        print (meta(n=4, w_algos2use = [5], config_w_parameters = [[[-10,10,2],[-100,100,10],[-10,20,2]]], moves_in=moves, fast = False, direction=1))
 
 if __name__ == "__main__":
-    print RPS()
+    print (RPS())
